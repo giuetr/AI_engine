@@ -82,17 +82,14 @@ class FinancialAgents:
         except Exception as error:
             return {"type": "error", "content": f"Network error: {error}, sorry"}
 
+   
+
     @staticmethod
-    def fetch_stock_news(input_text):
+    def fetch_stock_news(ticker_symbol):
         """Fetch the latest news for a given ticker symbol."""
         try:
-            match = re.search(r'latest news (?:for|of)?\s*(\w+)', input_text, re.IGNORECASE)
-            if match:
-                ticker = match.group(1).upper()
-            else:
-                return {"type": "error", "content": "Invalid input format."}
-
-            url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker}&page=0&apikey={FinancialAgents.API_KEY}"
+            # Fetch news data
+            url = f"https://financialmodelingprep.com/api/v3/stock_news?tickers={ticker_symbol}&page=0&apikey={FinancialAgents.API_KEY}"
             response = requests.get(url)
             if response.status_code == 200:
                 news_data = response.json()
@@ -110,14 +107,14 @@ class FinancialAgents:
                     ]
                     return {
                         "type": "stockNews",
-                        "content": f"Here are the latest news articles for {ticker}:",
+                        "content": f"Here are the latest news articles for {ticker_symbol}:",
                         "newsInfo": {
-                            "ticker": ticker,
+                            "ticker": ticker_symbol,
                             "articles": formatted_news
                         }
                     }
                 else:
-                    return {"type": "error", "content": f"No news available for {ticker}."}
+                    return {"type": "error", "content": f"No news available for {ticker_symbol}."}
             else:
                 return {"type": "error", "content": "Data not available"}
         except Exception as error:

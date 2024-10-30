@@ -1,0 +1,16 @@
+# Ignore virtual environments
+venv/
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Local environment files
+.env
+
+# Ignore database and other development files
+*.sqlite3

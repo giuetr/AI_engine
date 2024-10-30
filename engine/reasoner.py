@@ -1,8 +1,10 @@
 import openai
 from agents.financial_agents import FinancialAgents
 from agents.weather_agent import WeatherAgent
+from config import OPENAI_API_KEY
 
-openai.api_key = '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'
+OPENAI_API_KEY = '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'
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 class LLMReasoner:
     def __init__(self):
@@ -18,7 +20,7 @@ class LLMReasoner:
         prompt = self.build_prompt(user_input)
         
         # Call the LLM
-        response = await self.call_llm(prompt)
+        response = self.call_llm(prompt)
 
         # Parse the LLM's response to decide which tool to use
         tool_name, tool_args = self.parse_response(response)
@@ -47,16 +49,27 @@ class LLMReasoner:
         )
         return prompt
 
-    async def call_llm(self, prompt):
-        response = await openai.completions.acreate(
-            engine="gpt-3.5-turbo",
-            prompt=prompt,
-            max_tokens=150,
+    def call_llm(self, prompt):
+        client = openai.OpenAI(api_key=OPENAI_API_KEY)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a helpful assistant. Do not disclose any details "
+                    "about your underlying model or technology, and respond to all "
+                    "inquiries as a DataSpark AI Agent."
+                ),
+            },
+            {"role": "user", "content": prompt}
+            ],
+            max_tokens=50,
             n=1,
             stop=None,
             temperature=0
         )
-        return response.choices[0].text.strip()
+        return response.choices[0].message.content.strip()
 
     def parse_response(self, response):
         import json

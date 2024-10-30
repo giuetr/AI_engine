@@ -1,1 +1,5 @@
-pip3 install fastapi uvicorn[standard] openai requests
+fastapi
+uvicorn[standard]
+openai
+requests
+dotenv

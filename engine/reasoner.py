@@ -2,6 +2,7 @@ import openai
 from agents.financial_agents import FinancialAgents
 from agents.weather_agent import WeatherAgent
 from config import OPENAI_API_KEY
+import uuid
 
 OPENAI_API_KEY = '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'
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -27,10 +28,21 @@ class LLMReasoner:
 
         # Execute the selected tool
         if tool_name in self.tools:
+            tool_call_id = str(uuid.uuid4())
             result = self.tools[tool_name](**tool_args)
-            return result
+            return {
+                "content": "",  # If the assistant doesn't have any direct message
+                "toolInvocations": [
+                    {
+                        "toolName": tool_name,
+                        "toolCallId": tool_call_id,
+                        "state": "result",
+                        "result": result,
+                    }
+                ],
+            }
         else:
-            return {"type": "error", "content": "Sorry, I couldn't understand your request."}
+            return {"content": "Sorry, I couldn't understand your request."}
 
     def build_prompt(self, user_input):
         # Describe the available tools

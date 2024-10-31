@@ -16,7 +16,3 @@ This is the backend of a multi-agent conversational AI app built with FastAPI. I
    ```bash
    git clone https://github.com/giu.etr/AI_engine.git
    cd AI_engine
-
-### Running via virtual environment
-```python3 -m venv venv
-```source venv/bin/activate
